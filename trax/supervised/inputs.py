@@ -142,8 +142,8 @@ def download_and_prepare(dataset_name, data_dir):
     if dataset_name.startswith('t2t_'):
       # Download and run dataset generator for T2T problem.
       data_dir = os.path.join(data_dir, dataset_name)
-      tf.compat.v1.gfile.MakeDirs(data_dir)
-      tf.compat.v1.gfile.MakeDirs(dl_dir)
+      tf.io.gfile.makedirs(data_dir)
+      tf.io.gfile.makedirs(dl_dir)
       t2t_problems.problem(
           dataset_name[len('t2t_'):]).generate_data(data_dir, dl_dir)
     else:
@@ -465,11 +465,8 @@ def _train_and_eval_dataset_v1(problem_name, data_dir,
         examples.append(example)
     else:
       example_tensor = train_dataset.make_one_shot_iterator().get_next()
-      sess = tf.Session()
-      example1 = sess.run(example_tensor)
-      example2 = sess.run(example_tensor)
-      example3 = sess.run(example_tensor)
-      examples = [example1, example2, example3]
+      with tf.compat.v1.Session() as sess:
+        examples = [sess.run(example_tensor) for _ in range(3)]
   # We use 'inputs' as input except for purely auto-regressive tasks like
   # language models where 'targets' are used as input_key.
   input_key = 'inputs' if 'inputs' in examples[0] else 'targets'
