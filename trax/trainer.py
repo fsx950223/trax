@@ -19,9 +19,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
+sys.path.append('/usr/local/srv/trax-src')
+
 import datetime
 import os
-
 from absl import app
 from absl import flags
 from absl import logging
@@ -35,7 +37,6 @@ from trax.supervised import trainer_lib
 from trax.tf_numpy import numpy as tf_np
 
 FLAGS = flags.FLAGS
-
 
 # TODO(afrozm): Share between trainer.py and rl_trainer.py
 def _tf_setup_from_flags():
@@ -147,7 +148,7 @@ def tf_init_tpu(worker='', protocol=None):
 
 def main(_):
   logging.set_verbosity(FLAGS.log_level)
-
+  
   _tf_setup_from_flags()
   _gin_parse_configs()
   _jax_and_tf_configure_for_devices()
